@@ -25,6 +25,35 @@ def add_action_item_popover(subject_identifier, subject_dashboard_url):
         subject_dashboard_url=subject_dashboard_url,
         show_link_to_add_actions=show_link_to_add_actions)
 
+def model_fk(action_item_obj=None):
+    ref_model_a = settings.PARENT_REFERENCE_MODEL1
+    ref_model_b = settings.PARENT_REFERENCE_MODEL2
+    if ref_model_a and ref_model_b:
+        if action_item_obj.parent_reference_model == ref_model_a:
+            app_label, model_name = ref_model_a.split('.')
+            mdl_cls = django_apps.get_model(app_label, model_name)
+            try:
+                obj = mdl_cls.objects.get(
+                    subject_identifier=action_item_obj.subject_identifier,
+                    tracking_identifier=action_item_obj.parent_reference_identifier)
+                return {settings.ACTION_ITEM_MODEL_FK_FIELD: getattr(obj, 'pk')}
+            except mdl_cls.DoesNotExist:
+                pass
+        elif action_item_obj.parent_reference_model == ref_model_b:
+            app_label, model_name = ref_model_b.split('.')
+            mdl_cls = django_apps.get_model(app_label, model_name)
+            try:
+                obj = mdl_cls.objects.get(
+                    subject_identifier=action_item_obj.subject_identifier,
+                    tracking_identifier=action_item_obj.parent_reference_identifier)
+                field_name = settings.ACTION_ITEM_MODEL_FK_FIELD
+                return {
+                    settings.ACTION_ITEM_MODEL_FK_FIELD: getattr(obj, field_name).pk}
+            except mdl_cls.DoesNotExist:
+                pass
+        else:
+            return
+    return
 
 @register.inclusion_tag('edc_action_item/action_item_with_popover.html')
 def action_item_with_popover(action_item_model_wrapper, tabindex):
@@ -44,6 +73,9 @@ def action_item_with_popover(action_item_model_wrapper, tabindex):
     # this reference model and url
     reference_model_cls = django_apps.get_model(action_item.action_type.model)
     query_dict = dict(parse_qsl(urlparse(href).query))
+    model_fk_dict = model_fk(action_item_obj=action_item)
+    if model_fk_dict:
+        query_dict.update(model_fk_dict)
     parent_reference_model_url = None
     parent_reference_model_name = None
     action_item_reason = None

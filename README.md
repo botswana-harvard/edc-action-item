@@ -1,6 +1,7 @@
 # edc-action-items
 
-[![Build Status](https://travis-ci.org/clinicedc/edc-action-item.svg?branch=develop)](https://travis-ci.org/clinicedc/edc-action-item) [![Coverage Status](https://coveralls.io/repos/github/clinicedc/edc-action-item/badge.svg?branch=develop)](https://coveralls.io/github/clinicedc/edc-action-item?branch=develop)
+[![Build Status](https://travis-ci.org/clinicedc/edc-action-item.svg?branch=develop)](https://travis-ci.org/clinicedc/edc-action-item)
+[![Coverage Status](https://coveralls.io/repos/clinicedc/edc-action-item/badge.svg?branch=develop&service=github)](https://coveralls.io/github/clinicedc/edc-action-item?branch=develop)
 
 Add subject related action items to the Edc.
 
@@ -49,12 +50,12 @@ In it define actions using the `Action` class.
 
 The action item is associated with its model
 
-    from edc_action_item.model_mixins import ActionItemModelMixin
+    from edc_action_item.model_mixins import ActionModelMixin
     from edc_identifier.managers import TrackingIdentifierManager
     from edc_identifier.model_mixins import NonUniqueSubjectIdentifierFieldMixin
     from edc_identifier.model_mixins import TrackingIdentifierModelMixin
     
-    class AeInitial(ActionItemModelMixin, NonUniqueSubjectIdentifierFieldMixin,
+    class AeInitial(ActionModelMixin, NonUniqueSubjectIdentifierFieldMixin,
                     TrackingIdentifierModelMixin, BaseUuidModel):
 
     tracking_identifier_prefix = 'AE'

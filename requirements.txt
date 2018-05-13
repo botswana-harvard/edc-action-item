@@ -5,6 +5,9 @@ git+https://github.com/clinicedc/edc-device@develop#egg=edc_device
 git+https://github.com/clinicedc/edc-protocol@develop#egg=edc_protocol
 git+https://github.com/clinicedc/edc-identifier@develop#edc_identifier
 git+https://github.com/clinicedc/edc-model-admin@develop#edc_model_admin
-git+https://github.com/clinicedc/edc-model-wrapper@develop#edc_model_wrapper
 git+https://github.com/erikvw/django-revision@develop#egg=django_revision
+git+https://github.com/clinicedc/edc-model-wrapper@develop#edc_model_wrapper
+git+https://github.com/clinicedc/edc-prn@develop#edc-prn
 git+https://github.com/erikvw/django-simple-history.git@master#egg=django_simple_history
+git+https://github.com/clinicedc/edc-dashboard@develop#egg=edc-dashboard
+git+https://github.com/clinicedc/edc-subject-dashboard@develop#egg=edc-subject-dashboard

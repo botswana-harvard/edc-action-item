@@ -132,6 +132,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
+PARENT_REFERENCE_MODEL1 = ''
+PARENT_REFERENCE_MODEL2 = ''
+ACTION_ITEM_MODEL_FK_FIELD = ''
+
 DASHBOARD_URL_NAMES = {
     'subject_dashboard_url': 'edc_action_item:subject_dashboard_url',
 }

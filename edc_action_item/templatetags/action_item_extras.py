@@ -1,15 +1,16 @@
+from pprint import pprint
+from urllib.parse import urlparse, parse_qsl
+
 from django import template
 from django.apps import apps as django_apps
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from edc_base.utils import convert_php_dateformat
 from edc_constants.constants import OPEN
-from urllib.parse import urlparse, parse_qsl
 
-from ..constants import HIGH_PRIORITY
 from ..choices import ACTION_STATUS
+from ..constants import HIGH_PRIORITY
 from ..site_action_items import site_action_items
-from pprint import pprint
 
 register = template.Library()
 
@@ -24,6 +25,7 @@ def add_action_item_popover(subject_identifier, subject_dashboard_url):
         subject_identifier=subject_identifier,
         subject_dashboard_url=subject_dashboard_url,
         show_link_to_add_actions=show_link_to_add_actions)
+
 
 def model_fk(action_item_obj=None):
     ref_model_a = settings.PARENT_REFERENCE_MODEL1
@@ -54,6 +56,7 @@ def model_fk(action_item_obj=None):
         else:
             return
     return
+
 
 @register.inclusion_tag('edc_action_item/action_item_with_popover.html')
 def action_item_with_popover(action_item_model_wrapper, tabindex):
@@ -147,7 +150,6 @@ def action_item_with_popover(action_item_model_wrapper, tabindex):
 
         parent_action_identifier=parent_action_identifier,
         parent_action_item=action_item.parent_action_item,
-
 
         href=href,
         last_updated_text=last_updated_text,

@@ -91,6 +91,15 @@ def action_item_with_popover(action_item_model_wrapper, tabindex):
     except ObjectDoesNotExist:
         reference_model_obj = None
     try:
+        subject_visit = reference_model_obj.visit
+    except (AttributeError, ObjectDoesNotExist):
+        pass
+    else:
+        # reference model is a CRF, add visit to querystring
+        query_dict.update({
+            reference_model_obj.visit_model_attr(): str(subject_visit.pk),
+            'appointment': str(subject_visit.appointment.pk)})
+    try:
         reference_model_url = action_cls.reference_model_url(
             action_item=action_item,
             action_identifier=action_item.action_identifier,
@@ -112,6 +121,7 @@ def action_item_with_popover(action_item_model_wrapper, tabindex):
             try:
                 parent_reference_model_obj = parent_reference_model_cls.objects.get(
                     tracking_identifier=action_item.parent_action_item.reference_identifier)
+
             except ObjectDoesNotExist:
                 pass
             else:

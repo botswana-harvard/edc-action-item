@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from edc_constants.constants import OPEN
 
-from .models import ActionItem
+from .models import ActionItem, ActionItemUpdate
 
 
 @receiver(post_save, weak=False, dispatch_uid='update_or_create_action_item_on_post_save')
@@ -20,7 +20,8 @@ def update_or_create_action_item_on_post_save(sender, instance, raw,
             pass
         else:
             if ('historical' not in instance._meta.label_lower
-                    and not isinstance(instance, ActionItem)):
+                    and not (isinstance(instance, ActionItem) or 
+                             isinstance(instance, ActionItemUpdate))):
                 instance.action_cls(reference_model_obj=instance)
 
 

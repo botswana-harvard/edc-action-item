@@ -13,6 +13,8 @@ class ActionClassNotDefined(Exception):
 
 class ActionModelMixin(models.Model):
 
+    identifier_field = 'subject_identifier'
+
     action_name = None
 
     subject_dashboard_url = 'subject_dashboard_url'
@@ -61,7 +63,8 @@ class ActionModelMixin(models.Model):
         else:
             getter = ActionItemGetter(
                 self.action_cls,
-                subject_identifier=self.subject_identifier,
+                **{'subject_identifier': getattr(
+                        self, self.identifier_field)},
                 reference_identifier=self.tracking_identifier,
                 related_reference_identifier=self.related_tracking_identifier,
                 parent_reference_identifier=self.parent_tracking_identifier,

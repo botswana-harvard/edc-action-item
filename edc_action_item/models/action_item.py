@@ -1,6 +1,7 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from django.db.models.deletion import PROTECT
 from django.urls.base import reverse
 from django.utils.safestring import mark_safe
@@ -35,6 +36,8 @@ class ActionItemManager(models.Manager):
 class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidModel):
 
     subject_identifier_model = 'edc_registration.registeredsubject'
+
+    identifier_field = 'subject_identifier'
 
     action_identifier = models.CharField(
         max_length=25,
@@ -131,7 +134,8 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
                 self.subject_identifier_model)
             try:
                 subject_identifier_model_cls.objects.get(
-                    subject_identifier=self.subject_identifier)
+                    **{f'{self.identifier_field}': getattr(
+                        self, self.identifier_field)})
             except ObjectDoesNotExist:
                 raise SubjectDoesNotExist(
                     f'Invalid subject identifier. Subject does not exist '
@@ -144,7 +148,8 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
         super().save(*args, **kwargs)
 
     def natural_key(self):
-        return (self.action_identifier, )
+        return (self.action_identifier,)
+
     natural_key.dependencies = ['sites.Site']
 
     @property

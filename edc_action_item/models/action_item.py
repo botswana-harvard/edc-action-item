@@ -37,8 +37,6 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
 
     subject_identifier_model = 'edc_registration.registeredsubject'
 
-    identifier_field = 'subject_identifier'
-
     action_identifier = models.CharField(
         max_length=25,
         unique=True)
@@ -129,23 +127,26 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
         if not self.id:
             # a new action item always has a unique action identifier
             self.action_identifier = ActionIdentifier().identifier
-            # subject_identifier
-            subject_identifier_model_cls = django_apps.get_model(
-                self.subject_identifier_model)
-            try:
-                subject_identifier_model_cls.objects.get(
-                    **{f'{self.identifier_field}': getattr(
-                        self, self.identifier_field)})
-            except ObjectDoesNotExist:
-                raise SubjectDoesNotExist(
-                    f'Invalid subject identifier. Subject does not exist '
-                    f'in \'{self.subject_identifier_model}\'. '
-                    f'Got \'{self.subject_identifier}\'.')
+            self.check_registered_subject()
             self.priority = self.priority or self.action_type.priority
             self.reference_model = self.action_type.reference_model
             self.related_reference_model = self.action_type.related_reference_model
             self.instructions = self.action_type.instructions
         super().save(*args, **kwargs)
+
+    def check_registered_subject(self):
+        # subject_identifier
+        if self.subject_identifier:
+            subject_identifier_model_cls = django_apps.get_model(
+                self.subject_identifier_model)
+            try:
+                subject_identifier_model_cls.objects.get(
+                    subject_identifier=self.subject_identifier)
+            except ObjectDoesNotExist:
+                raise SubjectDoesNotExist(
+                    f'Invalid subject identifier. Subject does not exist '
+                    f'in \'{self.subject_identifier_model}\'. '
+                    f'Got \'{self.subject_identifier}\'.')
 
     def natural_key(self):
         return (self.action_identifier,)

@@ -1,6 +1,7 @@
 from django.apps import apps as django_apps
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
+from django.db.models import Q
 from django.db.models.deletion import PROTECT
 from django.urls.base import reverse
 from django.utils.safestring import mark_safe
@@ -126,7 +127,16 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
         if not self.id:
             # a new action item always has a unique action identifier
             self.action_identifier = ActionIdentifier().identifier
-            # subject_identifier
+            self.check_registered_subject()
+            self.priority = self.priority or self.action_type.priority
+            self.reference_model = self.action_type.reference_model
+            self.related_reference_model = self.action_type.related_reference_model
+            self.instructions = self.action_type.instructions
+        super().save(*args, **kwargs)
+
+    def check_registered_subject(self):
+        # subject_identifier
+        if self.subject_identifier:
             subject_identifier_model_cls = django_apps.get_model(
                 self.subject_identifier_model)
             try:
@@ -137,14 +147,10 @@ class ActionItem(NonUniqueSubjectIdentifierFieldMixin, SiteModelMixin, BaseUuidM
                     f'Invalid subject identifier. Subject does not exist '
                     f'in \'{self.subject_identifier_model}\'. '
                     f'Got \'{self.subject_identifier}\'.')
-            self.priority = self.priority or self.action_type.priority
-            self.reference_model = self.action_type.reference_model
-            self.related_reference_model = self.action_type.related_reference_model
-            self.instructions = self.action_type.instructions
-        super().save(*args, **kwargs)
 
     def natural_key(self):
-        return (self.action_identifier, )
+        return (self.action_identifier,)
+
     natural_key.dependencies = ['sites.Site']
 
     @property

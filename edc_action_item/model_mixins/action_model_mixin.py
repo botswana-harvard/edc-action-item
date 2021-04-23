@@ -55,6 +55,11 @@ class ActionModelMixin(models.Model):
             self.related_tracking_identifier = getattr(
                 self, self.action_cls.related_reference_model_fk_attr).tracking_identifier
 
+        self.update_action_identifier()
+
+        super().save(*args, **kwargs)
+
+    def update_action_identifier(self):
         if self.action_identifier:
             ActionItemGetter(
                 self.action_cls, action_identifier=self.action_identifier)
@@ -67,7 +72,6 @@ class ActionModelMixin(models.Model):
                 parent_reference_identifier=self.parent_tracking_identifier,
                 allow_create=True)
             self.action_identifier = getter.action_identifier
-        super().save(*args, **kwargs)
 
     @property
     def action_cls(self):

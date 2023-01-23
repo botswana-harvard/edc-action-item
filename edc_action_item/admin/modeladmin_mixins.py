@@ -6,11 +6,14 @@ from edc_model_admin import (
     ModelAdminReadOnlyMixin, ModelAdminInstitutionMixin,
     ModelAdminRedirectOnDeleteMixin)
 
+from .exportaction_mixin import ExportActionMixin
+
 
 class ModelAdminMixin(ModelAdminNextUrlRedirectMixin, ModelAdminFormInstructionsMixin,
                       ModelAdminFormAutoNumberMixin, ModelAdminRevisionMixin,
                       ModelAdminAuditFieldsMixin, ModelAdminReadOnlyMixin,
-                      ModelAdminInstitutionMixin, ModelAdminRedirectOnDeleteMixin):
+                      ModelAdminInstitutionMixin, ModelAdminRedirectOnDeleteMixin,
+                      ExportActionMixin):
 
     list_per_page = 10
     date_hierarchy = 'modified'

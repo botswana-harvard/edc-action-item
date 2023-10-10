@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.options import TabularInline
-from edc_model_admin import audit_fieldset_tuple
+from django_audit_fields.admin import audit_fieldset_tuple
 from edc_model_admin.inlines import TabularInlineMixin
 from edc_subject_dashboard import ModelAdminSubjectDashboardMixin
 
